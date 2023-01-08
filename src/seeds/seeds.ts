@@ -10,13 +10,18 @@ dotenv.config();
 const chance = new Chance();
 
 async function main() {
-  const dataSource = await init();
+  try {
+    const dataSource = await init();
 
-  await dataSource.synchronize(true);
+    await dataSource.synchronize(true);
 
-  const users = await seedUsers(dataSource, 15);
-  const tags = await seedTags(dataSource, 15);
-  await seedVideos(dataSource, 50, users, tags);
+    const users = await seedUsers(dataSource, 15);
+    const tags = await seedTags(dataSource, 15);
+    await seedVideos(dataSource, 50, users, tags);
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
 }
 
 async function seedUsers(
@@ -42,7 +47,9 @@ async function seedTags(dataSource: DataSource, count: number): Promise<Tag[]> {
   const tags: Tag[] = [];
   for (let i = 0; i < count; i++) {
     const newTag = new Tag();
-    newTag.name = chance.hashtag().replace('#', '');
+    do {
+      newTag.name = chance.hashtag().replace('#', '');
+    } while (tags.find((tag) => tag.name === newTag.name));
     tags.push(newTag);
   }
 
@@ -59,13 +66,16 @@ async function seedVideos(
   const videos: Video[] = [];
   for (let i = 0; i < count; i++) {
     const tagsCount = chance.integer({ min: 0, max: 5 });
-    const videoTags: Tag[] = Array.of(null)
-      .fill(null, 0, tagsCount)
-      .map(() => {
+    const videoTags: Tag[] = [];
+    for (let i = 0; i < tagsCount; i++) {
+      let tag: Tag;
+      do {
         const tagIndex = chance.integer({ min: 0, max: tags.length - 1 });
-        const tag = tags[tagIndex];
-        return tag;
-      });
+        tag = tags[tagIndex];
+      } while (videoTags.includes(tag));
+
+      videoTags.push(tag);
+    }
 
     const authorIndex = chance.integer({ min: 0, max: users.length - 1 });
     const author: User = users[authorIndex];
@@ -91,6 +101,7 @@ async function init(): Promise<DataSource> {
     type: 'postgres',
     url: process.env.DB_URL,
     entities: [User, Video, Tag],
+    synchronize: true,
   });
 
   return await dataSource.initialize();
