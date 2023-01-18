@@ -11,7 +11,9 @@ import {
   Request,
   UseGuards,
   Query,
+  Response,
 } from '@nestjs/common';
+import { Response as Res } from 'express';
 
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -41,12 +43,18 @@ export class UsersController {
   }
 
   @Get()
-  findAll(
-    @Query('query') query: string,
+  async findAll(
+    @Query('query') query = '',
     @Query('page') page = '1',
     @Query('limit') limit = '12',
-  ): Promise<User[]> {
-    return this.usersService.findAll(query.trim().toLowerCase(), +page, +limit);
+    @Response() res: Res,
+  ) {
+    const { users, count } = await this.usersService.findAll(
+      query.trim().toLowerCase(),
+      +page,
+      +limit,
+    );
+    res.set('total-count', count.toString()).json(users);
   }
 
   @Get(':id')

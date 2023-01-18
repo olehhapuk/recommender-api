@@ -28,9 +28,13 @@ export class UsersService {
     return newUser;
   }
 
-  findAll(query: string, page = 1, limit = 12): Promise<User[]> {
+  async findAll(
+    query: string,
+    page = 1,
+    limit = 12,
+  ): Promise<{ users: User[]; count: number }> {
     if (query !== '') {
-      return this.usersRepository.find({
+      const [users, count] = await this.usersRepository.findAndCount({
         relations: this.defaultRelations,
         where: {
           username: Like(`%${query}%`),
@@ -38,12 +42,14 @@ export class UsersService {
         skip: (page - 1) * limit,
         take: limit,
       });
+      return { users, count };
     } else {
-      return this.usersRepository.find({
+      const [users, count] = await this.usersRepository.findAndCount({
         relations: this.defaultRelations,
         skip: (page - 1) * limit,
         take: limit,
       });
+      return { users, count };
     }
   }
 
