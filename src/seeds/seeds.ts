@@ -105,9 +105,10 @@ async function init(): Promise<DataSource> {
     synchronize: false,
   });
 
+  const connection = await dataSource.initialize();
   await dataSource.synchronize(true);
 
-  return await dataSource.initialize();
+  return connection;
 }
 
 main();
