@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsRelations, Repository } from 'typeorm';
+import { FindOptionsRelations, Like, Repository } from 'typeorm';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -28,10 +28,23 @@ export class UsersService {
     return newUser;
   }
 
-  findAll(): Promise<User[]> {
-    return this.usersRepository.find({
-      relations: this.defaultRelations,
-    });
+  findAll(query: string, page = 1, limit = 12): Promise<User[]> {
+    if (query !== '') {
+      return this.usersRepository.find({
+        relations: this.defaultRelations,
+        where: {
+          username: Like(`%${query}%`),
+        },
+        skip: (page - 1) * limit,
+        take: limit,
+      });
+    } else {
+      return this.usersRepository.find({
+        relations: this.defaultRelations,
+        skip: (page - 1) * limit,
+        take: limit,
+      });
+    }
   }
 
   findOne(id: number): Promise<User> {

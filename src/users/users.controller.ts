@@ -10,6 +10,7 @@ import {
   NotFoundException,
   Request,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 
 import { UsersService } from './users.service';
@@ -40,8 +41,12 @@ export class UsersController {
   }
 
   @Get()
-  findAll(): Promise<User[]> {
-    return this.usersService.findAll();
+  findAll(
+    @Query('query') query: string,
+    @Query('page') page = '1',
+    @Query('limit') limit = '12',
+  ): Promise<User[]> {
+    return this.usersService.findAll(query.trim().toLowerCase(), +page, +limit);
   }
 
   @Get(':id')
