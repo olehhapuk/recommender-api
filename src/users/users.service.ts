@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsRelations, Like, Repository } from 'typeorm';
+import * as gravatar from 'gravatar';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -23,6 +24,7 @@ export class UsersService {
     const newUser = await this.usersRepository.save({
       username: data.username,
       password: data.password,
+      avatarUrl: gravatar.url(data.email),
     });
 
     return newUser;
@@ -66,6 +68,15 @@ export class UsersService {
     return this.usersRepository.findOne({
       where: {
         username,
+      },
+      relations: this.defaultRelations,
+    });
+  }
+
+  findOneByEmail(email: string): Promise<User> {
+    return this.usersRepository.findOne({
+      where: {
+        email,
       },
       relations: this.defaultRelations,
     });

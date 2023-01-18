@@ -27,7 +27,8 @@ export class AuthController {
     const existingUser = await this.usersService.findOneByUsername(
       data.username,
     );
-    if (existingUser) {
+    const existingEmail = await this.usersService.findOneByEmail(data.email);
+    if (existingUser || existingEmail) {
       throw new ForbiddenException('Username already taken');
     }
 
