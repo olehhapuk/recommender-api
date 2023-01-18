@@ -23,6 +23,7 @@ export class UsersService {
   async create(data: CreateUserDto): Promise<User> {
     const newUser = await this.usersRepository.save({
       username: data.username,
+      email: data.email,
       password: data.password,
       avatarUrl: gravatar.url(data.email),
     });
