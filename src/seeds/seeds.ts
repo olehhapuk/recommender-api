@@ -102,8 +102,10 @@ async function init(): Promise<DataSource> {
     type: 'postgres',
     url: process.env.DB_URL,
     entities: [User, Video, Tag],
-    synchronize: true,
+    synchronize: false,
   });
+
+  await dataSource.synchronize(true);
 
   return await dataSource.initialize();
 }
