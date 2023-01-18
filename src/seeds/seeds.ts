@@ -33,6 +33,7 @@ async function seedUsers(
   for (let i = 0; i < count; i++) {
     const newUser = new User();
     newUser.username = chance.name().toLowerCase().replace(/ /g, '_');
+    newUser.email = chance.email();
     newUser.password = chance.word();
     newUser.description = chance.paragraph();
     newUser.avatarUrl = chance.avatar();
