@@ -32,6 +32,7 @@
     "@nestjs/swagger": "^6.1.4",
     "@nestjs/typeorm": "^9.0.1",
     "chance": "^1.1.9",
+    "cloudinary": "^1.33.0",
     "dotenv": "^16.0.3",
     "gravatar": "^1.8.2",
     "passport": "^0.6.0",

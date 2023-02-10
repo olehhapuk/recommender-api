@@ -13,6 +13,7 @@ import { VideosModule } from './videos/videos.module';
 import { Video } from './videos/entities/video.entity';
 import { VideosService } from './videos/videos.service';
 import { Tag } from './tags/entities/tag.entity';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { Tag } from './tags/entities/tag.entity';
     UsersModule,
     AuthModule,
     VideosModule,
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [AppService, VideosService],
