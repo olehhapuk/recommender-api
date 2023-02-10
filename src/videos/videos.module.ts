@@ -8,9 +8,10 @@ import { TagsService } from '../tags/tags.service';
 import { Tag } from '../tags/entities/tag.entity';
 import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
+import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Video, Tag, User])],
+  imports: [TypeOrmModule.forFeature([Video, Tag, User]), CloudinaryModule],
   providers: [VideosService, TagsService, UsersService],
   controllers: [VideosController],
 })

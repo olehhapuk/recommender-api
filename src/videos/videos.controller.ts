@@ -20,6 +20,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { User } from '../users/entities/user.entity';
 import { TagsService } from '../tags/tags.service';
 import { UsersService } from '../users/users.service';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Controller('videos')
 export class VideosController {
@@ -27,6 +28,7 @@ export class VideosController {
     private readonly videosService: VideosService,
     private readonly tagsService: TagsService,
     private readonly usersService: UsersService,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -44,10 +46,10 @@ export class VideosController {
     }),
   )
   async upload(@UploadedFile() file: Express.Multer.File) {
+    const res = await this.cloudinaryService.uploadVideo(file);
     return {
-      videoName: file.filename,
-      thumbnailUrl:
-        'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.rootela.com%2Fwp-content%2Fuploads%2F2019%2F02%2Ftik-tok-musical-thumbnail.jpg&f=1&nofb=1&ipt=d166a8963ce8d6382dc022ac5bccc885bcf63e959ffb56330e2ecd128dca10d5&ipo=images',
+      videoUrl: res.secure_url,
+      thumbnailUrl: res.secure_url.replace('.mp4', '.jpg'),
     };
   }
 
