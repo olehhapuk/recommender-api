@@ -25,7 +25,7 @@ import { Tag } from './tags/entities/tag.entity';
     }),
     TypeOrmModule.forFeature([Video]),
     ServeStaticModule.forRoot({
-      rootPath: path.join(__dirname, '../', 'uploads'),
+      rootPath: path.join(__dirname, '../', 'public'),
     }),
     UsersModule,
     AuthModule,
