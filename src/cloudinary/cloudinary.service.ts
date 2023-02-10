@@ -6,9 +6,10 @@ export class CloudinaryService {
   static readonly FolderName = 'recommender';
 
   async uploadVideo(file: Express.Multer.File) {
+    console.log(file);
     return await v2.uploader.upload(file.path, {
       folder: CloudinaryService.FolderName,
-      format: 'video',
+      resource_type: 'video',
     });
   }
 

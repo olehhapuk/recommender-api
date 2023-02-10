@@ -12,6 +12,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 
 import { VideosService } from './videos.service';
 import { CreateVideoDto } from './dto/create-video.dto';
@@ -21,6 +22,15 @@ import { User } from '../users/entities/user.entity';
 import { TagsService } from '../tags/tags.service';
 import { UsersService } from '../users/users.service';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
+
+const storage = diskStorage({
+  destination(req, file, callback) {
+    callback(null, './public/uploads');
+  },
+  filename(req, file, callback) {
+    callback(null, `${Date.now()}_${file.originalname}`);
+  },
+});
 
 @Controller('videos')
 export class VideosController {
@@ -42,7 +52,7 @@ export class VideosController {
   @Post('upload')
   @UseInterceptors(
     FileInterceptor('video', {
-      dest: './public/uploads',
+      storage,
     }),
   )
   async upload(@UploadedFile() file: Express.Multer.File) {
